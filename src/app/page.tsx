@@ -71,11 +71,20 @@ const cardVariants = {
 }
 
 export default function InfkitAILanding() {
-  const [email, setEmail] = useState("")
-  const [platform, setPlatform] = useState("")
-  const [followers, setFollowers] = useState("")
-  const [contentType, setContentType] = useState("")
   const [limitedUsers, setLimitedUsers] = useState(100)
+  
+  // 커스텀 폼 상태
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    platform: "",
+    followers: "",
+    contentType: "",
+    goals: "",
+    experience: ""
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
   
   // 데모 상태
   const [demoUrl, setDemoUrl] = useState("")
@@ -98,9 +107,46 @@ export default function InfkitAILanding() {
     return () => clearInterval(interval)
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+
+  // 폼 입력 핸들러
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  // 폼 제출 핸들러
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log({ email, platform, followers, contentType })
+    setIsSubmitting(true)
+    
+    try {
+      // 실제 API 호출 시뮬레이션
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      console.log('Form submitted:', formData)
+      setSubmitSuccess(true)
+      
+      // 성공 후 3초 뒤 폼 리셋
+      setTimeout(() => {
+        setSubmitSuccess(false)
+        setFormData({
+          name: "",
+          email: "",
+          platform: "",
+          followers: "",
+          contentType: "",
+          goals: "",
+          experience: ""
+        })
+      }, 3000)
+    } catch (error) {
+      console.error('Form submission error:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   // 데모 생성 함수
@@ -553,137 +599,450 @@ export default function InfkitAILanding() {
       </motion.section>
 
       {/* Sign Up Form */}
-      <section className="py-20 px-4 bg-black/40 backdrop-blur-sm">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">지금 바로 시작하세요!</h2>
-            <p className="text-gray-200 text-lg">30초면 가입 완료! 바로 콘텐츠 생성을 시작할 수 있어요.</p>
-          </div>
-
-          <Card className="bg-black/60 border-white/20 backdrop-blur-sm">
-            <CardContent className="p-8">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-white font-medium mb-2">이메일 주소</label>
-                  <Input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    className="bg-white/10 border-white/30 text-white placeholder:text-gray-400 focus:border-purple-400"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-white font-medium mb-2">주로 활동하는 플랫폼</label>
-                  <select
-                    value={platform}
-                    onChange={(e) => setPlatform(e.target.value)}
-                    className="w-full p-3 bg-white/10 border border-white/30 rounded-md text-white focus:border-purple-400 focus:outline-none"
-                    required
-                  >
-                    <option value="" className="text-gray-800">
-                      선택해주세요
-                    </option>
-                    <option value="youtube" className="text-gray-800">
-                      유튜브
-                    </option>
-                    <option value="instagram" className="text-gray-800">
-                      인스타그램
-                    </option>
-                    <option value="blog" className="text-gray-800">
-                      블로그
-                    </option>
-                    <option value="tiktok" className="text-gray-800">
-                      틱톡
-                    </option>
-                    <option value="twitter" className="text-gray-800">
-                      트위터
-                    </option>
-                    <option value="multiple" className="text-gray-800">
-                      여러 플랫폼
-                    </option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-white font-medium mb-2">팔로워/구독자 수</label>
-                  <select
-                    value={followers}
-                    onChange={(e) => setFollowers(e.target.value)}
-                    className="w-full p-3 bg-white/10 border border-white/30 rounded-md text-white focus:border-purple-400 focus:outline-none"
-                    required
-                  >
-                    <option value="" className="text-gray-800">
-                      선택해주세요
-                    </option>
-                    <option value="under-1k" className="text-gray-800">
-                      1천명 미만
-                    </option>
-                    <option value="1k-10k" className="text-gray-800">
-                      1천~1만명
-                    </option>
-                    <option value="10k-100k" className="text-gray-800">
-                      1만~10만명
-                    </option>
-                    <option value="100k-1m" className="text-gray-800">
-                      10만~100만명
-                    </option>
-                    <option value="over-1m" className="text-gray-800">
-                      100만명 이상
-                    </option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-white font-medium mb-2">주요 콘텐츠 유형</label>
-                  <select
-                    value={contentType}
-                    onChange={(e) => setContentType(e.target.value)}
-                    className="w-full p-3 bg-white/10 border border-white/30 rounded-md text-white focus:border-purple-400 focus:outline-none"
-                    required
-                  >
-                    <option value="" className="text-gray-800">
-                      선택해주세요
-                    </option>
-                    <option value="education" className="text-gray-800">
-                      교육/강의
-                    </option>
-                    <option value="entertainment" className="text-gray-800">
-                      엔터테인먼트
-                    </option>
-                    <option value="lifestyle" className="text-gray-800">
-                      라이프스타일
-                    </option>
-                    <option value="business" className="text-gray-800">
-                      비즈니스
-                    </option>
-                    <option value="tech" className="text-gray-800">
-                      기술/IT
-                    </option>
-                    <option value="other" className="text-gray-800">
-                      기타
-                    </option>
-                  </select>
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 text-lg rounded-xl shadow-2xl transform hover:scale-105 transition-all duration-200 border-0"
-                >
-                  30% 할인으로 지금 시작하기
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-
-                <p className="text-center text-gray-300 text-sm">
-                  가입 즉시 무료 체험이 시작됩니다. 언제든 취소 가능해요.
-                </p>
-              </form>
-            </CardContent>
-          </Card>
+      <motion.section 
+        className="py-20 px-4 bg-black/40 backdrop-blur-sm relative overflow-hidden"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={fadeInUpVariants}
+      >
+        {/* Background Effects */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl"></div>
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-pink-500/10 rounded-full blur-2xl"></div>
         </div>
-      </section>
+
+        <div className="max-w-5xl mx-auto relative">
+          <motion.div 
+            className="text-center mb-12"
+            variants={fadeInUpVariants}
+          >
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-full px-4 py-2 mb-6">
+              <Sparkles className="w-4 h-4 text-purple-300" />
+              <span className="text-purple-200 font-medium text-sm">무료 체험 시작</span>
+            </div>
+            
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+              지금 바로{" "}
+              <span className="bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+                시작하세요!
+              </span>
+            </h2>
+            <p className="text-gray-200 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+              30초면 가입 완료! 바로 콘텐츠 생성을 시작할 수 있어요.
+            </p>
+          </motion.div>
+
+          {/* Benefits Grid */}
+          <motion.div 
+            className="grid md:grid-cols-3 gap-6 mb-12"
+            variants={staggerContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            {[
+              {
+                icon: <Zap className="w-5 h-5" />,
+                title: "즉시 시작",
+                description: "가입 후 바로 사용 가능"
+              },
+              {
+                icon: <CheckCircle className="w-5 h-5" />,
+                title: "무료 체험",
+                description: "7일 무료로 모든 기능 이용"
+              },
+              {
+                icon: <Users className="w-5 h-5" />,
+                title: "24/7 지원",
+                description: "언제든지 도움을 받으세요"
+              }
+            ].map((benefit, index) => (
+              <motion.div 
+                key={index}
+                className="text-center p-4"
+                variants={cardVariants}
+              >
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-3 text-white">
+                  {benefit.icon}
+                </div>
+                <h3 className="text-white font-semibold mb-2">{benefit.title}</h3>
+                <p className="text-gray-300 text-sm">{benefit.description}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Form Container */}
+          <motion.div variants={cardVariants}>
+            <Card className="bg-gradient-to-br from-black/80 to-purple-900/20 border border-purple-500/30 backdrop-blur-md shadow-2xl">
+              <CardContent className="p-2 sm:p-4 lg:p-6">
+                {/* Form Header */}
+                <div className="relative mb-10 p-8 bg-gradient-to-br from-purple-500/20 via-pink-500/15 to-purple-500/20 rounded-2xl border border-purple-400/40 backdrop-blur-md overflow-hidden">
+                  <div className="relative text-center">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl mb-6 shadow-lg shadow-green-500/30">
+                      <CheckCircle className="w-8 h-8 text-white" />
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-white mb-3">안전하고 빠른 가입</h3>
+                    <p className="text-gray-200 text-sm leading-relaxed mb-6 max-w-md mx-auto">
+                      개인정보는 최고 수준의 보안으로 보호되며, 언제든지 구독을 취소할 수 있습니다.
+                    </p>
+                    
+                    <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
+                      <div className="flex items-center space-x-2 bg-white/10 px-4 py-2 rounded-full">
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span className="text-green-300 font-medium">SSL 보안</span>
+                      </div>
+                      <div className="flex items-center space-x-2 bg-white/10 px-4 py-2 rounded-full">
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                        <span className="text-blue-300 font-medium">GDPR 준수</span>
+                      </div>
+                      <div className="flex items-center space-x-2 bg-white/10 px-4 py-2 rounded-full">
+                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                        <span className="text-purple-300 font-medium">256bit 암호화</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 커스텀 폼 */}
+                {submitSuccess ? (
+                  <motion.div 
+                    className="text-center py-16 px-8"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <CheckCircle className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-4">가입 완료!</h3>
+                    <p className="text-gray-200 mb-6">
+                      환영합니다! 곧 InfkitAI 서비스를 이용하실 수 있습니다.
+                    </p>
+                    <div className="flex items-center justify-center space-x-2 text-green-300">
+                      <CheckCircle className="w-4 h-4" />
+                      <span className="text-sm">이메일로 시작 가이드를 발송했습니다</span>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <form onSubmit={handleFormSubmit} className="space-y-12">
+                    {/* 진행 단계 표시 */}
+                    <div className="flex items-center justify-center space-x-4 mb-8">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">1</div>
+                        <span className="text-white text-sm font-medium">기본 정보</span>
+                      </div>
+                      <div className="w-8 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">2</div>
+                        <span className="text-white text-sm font-medium">활동 정보</span>
+                      </div>
+                      <div className="w-8 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">3</div>
+                        <span className="text-white text-sm font-medium">목표 설정</span>
+                      </div>
+                    </div>
+
+                    {/* 섹션 1: 기본 정보 */}
+                    <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl p-6 border border-purple-400/20">
+                      <div className="flex items-center space-x-3 mb-6">
+                        <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">1</div>
+                        <h3 className="text-lg font-semibold text-white">기본 정보</h3>
+                      </div>
+                      
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="group">
+                          <label className="flex items-center space-x-2 text-white font-medium mb-3 text-sm">
+                            <Users className="w-4 h-4 text-purple-400" />
+                            <span>이름 <span className="text-red-400">*</span></span>
+                          </label>
+                          <div className="relative">
+                            <Input
+                              type="text"
+                              value={formData.name}
+                              onChange={(e) => handleInputChange('name', e.target.value)}
+                              placeholder="홍길동"
+                              className="bg-white/10 border-white/30 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20 h-14 rounded-xl transition-all duration-300 pl-4 pr-4 group-hover:border-purple-400/50"
+                              required
+                            />
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/5 to-pink-500/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          </div>
+                        </div>
+                        <div className="group">
+                          <label className="flex items-center space-x-2 text-white font-medium mb-3 text-sm">
+                            <Send className="w-4 h-4 text-purple-400" />
+                            <span>이메일 주소 <span className="text-red-400">*</span></span>
+                          </label>
+                          <div className="relative">
+                            <Input
+                              type="email"
+                              value={formData.email}
+                              onChange={(e) => handleInputChange('email', e.target.value)}
+                              placeholder="your@email.com"
+                              className="bg-white/10 border-white/30 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20 h-14 rounded-xl transition-all duration-300 pl-4 pr-4 group-hover:border-purple-400/50"
+                              required
+                            />
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/5 to-pink-500/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 섹션 2: 활동 정보 */}
+                    <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl p-6 border border-blue-400/20">
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">2</div>
+                        <h3 className="text-lg font-semibold text-white">활동 정보</h3>
+                      </div>
+                      <p className="text-gray-300 text-sm mb-6 leading-relaxed">
+                        현재 활동하고 계신 플랫폼과 규모를 알려주시면, 더 맞춤형 콘텐츠 변환 서비스를 제공할 수 있습니다.
+                      </p>
+                      
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="group">
+                          <label className="flex items-center space-x-2 text-white font-medium mb-3 text-sm">
+                            <Youtube className="w-4 h-4 text-blue-400" />
+                            <span>주요 활동 플랫폼 <span className="text-red-400">*</span></span>
+                          </label>
+                          <div className="relative">
+                            <select
+                              value={formData.platform}
+                              onChange={(e) => handleInputChange('platform', e.target.value)}
+                              className="w-full h-14 px-4 bg-white/10 border border-white/30 rounded-xl text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 focus:outline-none transition-all duration-300 group-hover:border-blue-400/50 appearance-none cursor-pointer"
+                              required
+                            >
+                              <option value="" className="text-gray-800">선택해주세요</option>
+                              <option value="youtube" className="text-gray-800">📺 유튜브</option>
+                              <option value="instagram" className="text-gray-800">📸 인스타그램</option>
+                              <option value="blog" className="text-gray-800">📝 블로그</option>
+                              <option value="tiktok" className="text-gray-800">🎵 틱톡</option>
+                              <option value="twitter" className="text-gray-800">🐦 트위터</option>
+                              <option value="multiple" className="text-gray-800">🌐 여러 플랫폼</option>
+                            </select>
+                            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                              <ArrowRight className="w-4 h-4 text-gray-400 rotate-90" />
+                            </div>
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          </div>
+                        </div>
+                        <div className="group">
+                          <label className="flex items-center space-x-2 text-white font-medium mb-3 text-sm">
+                            <Users className="w-4 h-4 text-blue-400" />
+                            <span>팔로워/구독자 수 <span className="text-red-400">*</span></span>
+                          </label>
+                          <div className="relative">
+                            <select
+                              value={formData.followers}
+                              onChange={(e) => handleInputChange('followers', e.target.value)}
+                              className="w-full h-14 px-4 bg-white/10 border border-white/30 rounded-xl text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 focus:outline-none transition-all duration-300 group-hover:border-blue-400/50 appearance-none cursor-pointer"
+                              required
+                            >
+                              <option value="" className="text-gray-800">선택해주세요</option>
+                              <option value="under-1k" className="text-gray-800">🌱 1천명 미만</option>
+                              <option value="1k-10k" className="text-gray-800">🌿 1천~1만명</option>
+                              <option value="10k-100k" className="text-gray-800">🌳 1만~10만명</option>
+                              <option value="100k-1m" className="text-gray-800">🏆 10만~100만명</option>
+                              <option value="over-1m" className="text-gray-800">⭐ 100만명 이상</option>
+                            </select>
+                            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                              <ArrowRight className="w-4 h-4 text-gray-400 rotate-90" />
+                            </div>
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="grid md:grid-cols-2 gap-6 mt-6">
+                        <div className="group">
+                          <label className="flex items-center space-x-2 text-white font-medium mb-3 text-sm">
+                            <FileText className="w-4 h-4 text-blue-400" />
+                            <span>주요 콘텐츠 유형 <span className="text-red-400">*</span></span>
+                          </label>
+                          <div className="relative">
+                            <select
+                              value={formData.contentType}
+                              onChange={(e) => handleInputChange('contentType', e.target.value)}
+                              className="w-full h-14 px-4 bg-white/10 border border-white/30 rounded-xl text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 focus:outline-none transition-all duration-300 group-hover:border-blue-400/50 appearance-none cursor-pointer"
+                              required
+                            >
+                              <option value="" className="text-gray-800">선택해주세요</option>
+                              <option value="education" className="text-gray-800">📚 교육/강의</option>
+                              <option value="entertainment" className="text-gray-800">🎭 엔터테인먼트</option>
+                              <option value="lifestyle" className="text-gray-800">🌟 라이프스타일</option>
+                              <option value="business" className="text-gray-800">💼 비즈니스</option>
+                              <option value="tech" className="text-gray-800">💻 기술/IT</option>
+                              <option value="beauty" className="text-gray-800">💄 뷰티/패션</option>
+                              <option value="food" className="text-gray-800">🍳 요리/음식</option>
+                              <option value="other" className="text-gray-800">🎯 기타</option>
+                            </select>
+                            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                              <ArrowRight className="w-4 h-4 text-gray-400 rotate-90" />
+                            </div>
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          </div>
+                        </div>
+                        <div className="group">
+                          <label className="flex items-center space-x-2 text-white font-medium mb-3 text-sm">
+                            <Clock className="w-4 h-4 text-blue-400" />
+                            <span>콘텐츠 제작 경험</span>
+                          </label>
+                          <div className="relative">
+                            <select
+                              value={formData.experience}
+                              onChange={(e) => handleInputChange('experience', e.target.value)}
+                              className="w-full h-14 px-4 bg-white/10 border border-white/30 rounded-xl text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 focus:outline-none transition-all duration-300 group-hover:border-blue-400/50 appearance-none cursor-pointer"
+                            >
+                              <option value="" className="text-gray-800">선택해주세요</option>
+                              <option value="beginner" className="text-gray-800">🔰 초보자 (1년 미만)</option>
+                              <option value="intermediate" className="text-gray-800">📈 중급자 (1-3년)</option>
+                              <option value="advanced" className="text-gray-800">🚀 고급자 (3-5년)</option>
+                              <option value="expert" className="text-gray-800">👑 전문가 (5년 이상)</option>
+                            </select>
+                            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                              <ArrowRight className="w-4 h-4 text-gray-400 rotate-90" />
+                            </div>
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 섹션 3: 목표 설정 */}
+                    <div className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-xl p-6 border border-pink-400/20">
+                      <div className="flex items-center space-x-3 mb-6">
+                        <div className="w-6 h-6 bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">3</div>
+                        <h3 className="text-lg font-semibold text-white">목표 설정</h3>
+                      </div>
+                      
+                      <div className="group">
+                        <label className="flex items-center space-x-2 text-white font-medium mb-3 text-sm">
+                          <TrendingUp className="w-4 h-4 text-pink-400" />
+                          <span>InfkitAI로 달성하고 싶은 목표</span>
+                        </label>
+                        <div className="relative">
+                          <textarea
+                            value={formData.goals}
+                            onChange={(e) => handleInputChange('goals', e.target.value)}
+                            placeholder="예: 유튜브 영상을 블로그 포스트로 변환하여 SEO 효과를 높이고 싶습니다. 또한 인스타그램과 트위터에도 자동으로 콘텐츠를 배포하여 더 많은 사람들에게 도달하고 싶어요."
+                            rows={5}
+                            className="w-full px-4 py-4 pb-8 bg-white/10 border border-white/30 rounded-xl text-white placeholder:text-gray-400 focus:border-pink-400 focus:ring-2 focus:ring-pink-400/20 focus:outline-none transition-all duration-300 resize-none group-hover:border-pink-400/50"
+                          />
+                          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-pink-500/5 to-purple-500/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <div className="absolute bottom-2 right-3 text-xs text-gray-400">
+                            {formData.goals.length}/500
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-center mt-3">
+                          <p className="text-gray-400 text-xs">
+                            구체적인 목표를 작성해주시면 더 맞춤형 서비스를 제공할 수 있어요.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 제출 버튼 섹션 */}
+                    <div className="bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-2xl p-8 border border-purple-400/20 text-center">
+                      <div className="mb-6">
+                        <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-400/30 rounded-full px-4 py-2 mb-4">
+                          <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                          <span className="text-red-300 text-sm font-medium">🔥 한정 특가 진행 중</span>
+                        </div>
+                        <h4 className="text-xl font-bold text-white mb-2">지금 가입하면 30% 할인!</h4>
+                        <p className="text-gray-300 text-sm">
+                          월 ₩29,000 → <span className="text-purple-300 font-bold">₩19,900</span>
+                        </p>
+                      </div>
+
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-700 text-white font-bold py-5 text-lg rounded-2xl shadow-2xl transform hover:scale-105 disabled:hover:scale-100 transition-all duration-300 border-0 relative overflow-hidden"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                            처리 중...
+                          </>
+                        ) : (
+                          <>
+                            <span className="relative z-10">30% 할인으로 지금 시작하기</span>
+                            <ArrowRight className="ml-3 w-5 h-5 relative z-10" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+                          </>
+                        )}
+                      </Button>
+
+                      <div className="mt-6 space-y-3">
+                        <div className="flex items-center justify-center space-x-6 text-xs text-gray-400">
+                          <div className="flex items-center space-x-1">
+                            <CheckCircle className="w-3 h-3 text-green-400" />
+                            <span>7일 무료 체험</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <CheckCircle className="w-3 h-3 text-green-400" />
+                            <span>언제든 취소</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <CheckCircle className="w-3 h-3 text-green-400" />
+                            <span>즉시 이용 가능</span>
+                          </div>
+                        </div>
+                        <p className="text-gray-400 text-xs">
+                          가입 즉시 모든 기능을 사용할 수 있으며, 언제든지 구독을 취소할 수 있습니다.
+                        </p>
+                      </div>
+                    </div>
+                  </form>
+                )}
+
+                {/* Trust Indicators */}
+                <div className="mt-6 pt-6 border-t border-white/10">
+                  <div className="flex flex-wrap justify-center items-center gap-6 text-gray-400 text-xs">
+                    <div className="flex items-center space-x-1">
+                      <CheckCircle className="w-3 h-3 text-green-400" />
+                      <span>무료 체험</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <CheckCircle className="w-3 h-3 text-green-400" />
+                      <span>언제든 취소</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <CheckCircle className="w-3 h-3 text-green-400" />
+                      <span>개인정보 보호</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <CheckCircle className="w-3 h-3 text-green-400" />
+                      <span>즉시 이용 가능</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Additional CTA */}
+          <motion.div 
+            className="text-center mt-8"
+            variants={fadeInUpVariants}
+          >
+            <p className="text-gray-300 text-sm mb-4">
+              이미 계정이 있으신가요?{" "}
+              <a href="#" className="text-purple-300 hover:text-purple-200 font-medium underline">
+                로그인하기
+              </a>
+            </p>
+            <div className="flex items-center justify-center space-x-4 text-xs text-gray-400">
+              <span>🔒 SSL 보안</span>
+              <span>•</span>
+              <span>📧 스팸 없음</span>
+              <span>•</span>
+              <span>⚡ 즉시 시작</span>
+            </div>
+          </motion.div>
+        </div>
+      </motion.section>
 
       {/* Footer */}
       <footer id="contact" className="py-12 px-4 border-t border-white/20 bg-black/60">

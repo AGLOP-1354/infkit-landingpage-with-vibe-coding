@@ -142,3 +142,46 @@
     }
   }
 }
+
+/* Tally 폼 다크 테마 커스터마이징 */
+@layer components {
+  /* Tally iframe 내부 스타일 오버라이드 */
+  iframe[title="infkit 사용자 조사"] {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+}
+
+/* Tally 폼 전역 스타일 커스터마이징 */
+.tally-form-container {
+  background: transparent !important;
+}
+
+/* Tally 폼 요소들 다크 테마 적용 */
+iframe[src*="tally.so"] {
+  border-radius: 12px;
+  background: transparent !important;
+}
+
+/* Tally 폼 내부 요소 스타일링 시도 */
+iframe[title="infkit 사용자 조사"]::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+  pointer-events: none;
+  border-radius: 12px;
+}
+
+/* 더 정교한 Tally 폼 스타일링을 위한 CSS 변수 */
+:root {
+  --tally-bg-primary: rgba(0, 0, 0, 0.8);
+  --tally-bg-secondary: rgba(255, 255, 255, 0.1);
+  --tally-text-primary: #ffffff;
+  --tally-text-secondary: #d1d5db;
+  --tally-border: rgba(147, 51, 234, 0.3);
+  --tally-accent: linear-gradient(135deg, #8b5cf6, #ec4899);
+}
